@@ -487,3 +487,19 @@ WHERE d.DVD_No NOT IN (
 )
 ORDER BY d.DVD_No;
 
+-- 2. Create a list that shows all borrowers who have over-due loans and rank them highest to lowest.
+
+SELECT
+    b.Borrower_No,
+    b.Borrower_Name,
+    b.Borrower_Address,
+    COUNT(lc.Copy_No)               AS Overdue_Items,
+    MIN(lc.Return_Due_Date)         AS Earliest_Due_Date
+FROM BORROWER b
+    INNER JOIN LOAN l        ON b.Borrower_No = l.Borrower_No
+    INNER JOIN LOAN_COPY lc  ON l.Loan_No     = lc.Loan_No
+WHERE lc.DVD_Status      = 'On Loan'
+  AND lc.Return_Due_Date < CURDATE()
+GROUP BY b.Borrower_No, b.Borrower_Name, b.Borrower_Address
+ORDER BY Overdue_Items DESC;
+
