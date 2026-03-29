@@ -524,3 +524,25 @@ WHERE rc.Rental_Category = 'Comedy'
   AND l.Loan_Date >= DATE_SUB(CURDATE(), INTERVAL 28 DAY)
 ORDER BY b.Borrower_Name, l.Loan_Date;
 
+-- 4. Find the borrower who has accumulate the most over-due finds, calculate the total in fines and display their details.
+
+SELECT
+    b.Borrower_No,
+    b.Borrower_Name,
+    b.Borrower_Address,
+    b.Borrower_Status,
+    COUNT(lc.Copy_No)                           AS Overdue_Items,
+    SUM(DATEDIFF(CURDATE(), lc.Return_Due_Date))
+                                                AS Total_Days_Overdue,
+    CONCAT('£', FORMAT(
+        SUM(DATEDIFF(CURDATE(), lc.Return_Due_Date)) * 1.00,
+        2))                                     AS Total_Fine
+FROM BORROWER b
+    INNER JOIN LOAN l        ON b.Borrower_No = l.Borrower_No
+    INNER JOIN LOAN_COPY lc  ON l.Loan_No     = lc.Loan_No
+WHERE lc.DVD_Status      = 'On Loan'
+  AND lc.Return_Due_Date < CURDATE()
+GROUP BY b.Borrower_No, b.Borrower_Name,
+         b.Borrower_Address, b.Borrower_Status
+ORDER BY Total_Days_Overdue DESC
+LIMIT 1;
