@@ -57,3 +57,19 @@ CREATE TABLE LOAN_COPY (
     FOREIGN KEY (Loan_No) REFERENCES LOAN(Loan_No),
     FOREIGN KEY (Copy_No) REFERENCES COPY(Copy_No)
 );
+
+INSERT INTO RENTAL_CATEGORY (Rental_Category, Rental_Cost)
+VALUES
+    ('Action', 4.00),
+    ('Adventure', 3.50),
+    ('Animation', 3.50),
+    ('Biography', 3.80),
+    ('Comedy', 4.50),
+    ('Crime', 3.80),
+    ('Drama', 4.20),
+    ('Horror', 4.00),
+    ('Mystery', 3.80),
+    ('Romance', 4.50),
+    ('Sci-Fi', 4.50),
+    ('Superhero', 4.50),
+    ('Thriller', 4.50);
