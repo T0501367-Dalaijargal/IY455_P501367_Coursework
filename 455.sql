@@ -40,3 +40,11 @@ CREATE TABLE COPY (
     FOREIGN KEY (DVD_No) REFERENCES DVD(DVD_No)
 );
 
+CREATE TABLE LOAN (
+    Loan_No          VARCHAR(10)   NOT NULL,
+    Borrower_No      VARCHAR(10)   NOT NULL,
+    Loan_Date        DATE          NOT NULL,
+    PRIMARY KEY (Loan_No),
+    FOREIGN KEY (Borrower_No) REFERENCES BORROWER(Borrower_No)
+);
+
