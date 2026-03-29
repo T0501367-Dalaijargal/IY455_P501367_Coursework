@@ -315,37 +315,37 @@ INSERT INTO COPY (Copy_No, DVD_No, Shelf_Position) VALUES
     ('CN6756', 'DN0157', 'CO507');
 
 INSERT INTO LOAN (Loan_No, Borrower_No, Loan_Date) VALUES
-    ('LN74857', 'BN1721', '2002-06-02'),
-    ('LN80123', 'BN2034', '2002-06-05'),
-    ('LN80456', 'BN3156', '2002-06-08'),
-    ('LN80789', 'BN5012', '2002-06-10'),
-    ('LN81012', 'BN6378', '2002-06-12'),
-    ('LN81345', 'BN7491', '2002-06-15'),
-    ('LN81678', 'BN8654', '2002-06-18'),
-    ('LN81901', 'BN1045', '2002-06-20'),
-    ('LN82234', 'BN1721', '2002-07-01'),
-    ('LN82567', 'BN2034', '2002-07-05');
+    ('LN74857', 'BN1721', '2026-01-05'),
+    ('LN80123', 'BN2034', '2026-01-12'),
+    ('LN80456', 'BN3156', '2026-01-20'),
+    ('LN80789', 'BN5012', '2026-02-03'),
+    ('LN81012', 'BN6378', '2026-02-14'),
+    ('LN81345', 'BN7491', '2026-02-22'),
+    ('LN81678', 'BN8654', '2026-03-01'),
+    ('LN81901', 'BN1045', '2026-03-08'),
+    ('LN82234', 'BN1721', '2026-03-15'),
+    ('LN82567', 'BN2034', '2026-03-22');
 
 INSERT INTO LOAN_COPY (Loan_No, Copy_No, DVD_Status, Return_Due_Date) VALUES
-    ('LN74857', 'CN1099', 'On Loan', '2002-06-16'),
-    ('LN74857', 'CN8739', 'On Loan', '2002-06-16'),
-    ('LN80123', 'CN2045', 'Returned', '2002-06-19'),
-    ('LN80123', 'CN3112', 'On Loan', '2002-06-19'),
-    ('LN80456', 'CN4056', 'Returned', '2002-06-22'),
-    ('LN80789', 'CN5201', 'On Loan', '2002-06-24'),
-    ('LN80789', 'CN6089', 'On Loan', '2002-06-24'),
-    ('LN81012', 'CN7234', 'Returned', '2002-06-26'),
-    ('LN81345', 'CN8312', 'On Loan', '2002-06-29'),
-    ('LN81345', 'CN9001', 'On Loan', '2002-06-29'),
-    ('LN81678', 'CN1156', 'Returned', '2002-07-02'),
-    ('LN81678', 'CN2278', 'Returned', '2002-07-02'),
-    ('LN81901', 'CN3345', 'On Loan', '2002-07-04'),
-    ('LN82234', 'CN4489', 'On Loan', '2002-07-15'),
-    ('LN82234', 'CN5567', 'On Loan', '2002-07-15'),
-    ('LN82567', 'CN6623', 'Returned', '2002-07-19'),
-    ('LN82567', 'CN7790', 'On Loan', '2002-07-19'),
-    ('LN82567', 'CN2389', 'On Loan', '2002-07-19');
-
+    ('LN74857', 'CN1099', 'On Loan', '2026-01-19'),
+    ('LN74857', 'CN8739', 'On Loan', '2026-01-19'),
+    ('LN80123', 'CN2045', 'Returned', '2026-01-26'),
+    ('LN80123', 'CN3112', 'On Loan', '2026-01-26'),
+    ('LN80456', 'CN4056', 'Returned', '2026-02-03'),
+    ('LN80789', 'CN5201', 'On Loan', '2026-02-17'),
+    ('LN80789', 'CN6089', 'On Loan', '2026-02-17'),
+    ('LN81012', 'CN7234', 'On Loan', '2026-02-28'),
+    ('LN81012', 'CN2278', 'On Loan', '2026-02-28'),
+    ('LN81345', 'CN8312', 'On Loan', '2026-03-08'),
+    ('LN81345', 'CN9001', 'On Loan', '2026-03-08'),
+    ('LN81678', 'CN1156', 'Returned', '2026-03-15'),
+    ('LN81678', 'CN2389', 'Returned', '2026-03-15'),
+    ('LN81901', 'CN3345', 'On Loan', '2026-03-22'),
+    ('LN81901', 'CN6756', 'On Loan', '2026-03-22'),
+    ('LN82234', 'CN4489', 'On Loan', '2026-03-29'),
+    ('LN82234', 'CN5567', 'On Loan', '2026-03-29'),
+    ('LN82567', 'CN6623', 'Returned', '2026-04-05'),
+    ('LN82567', 'CN7790', 'On Loan', '2026-04-05');
 SELECT * FROM RENTAL_CATEGORY ORDER BY Rental_Category;
 SELECT * FROM BORROWER ORDER BY Borrower_No;
 SELECT * FROM DVD ORDER BY DVD_No LIMIT 20;
@@ -409,8 +409,7 @@ FROM BORROWER b
     INNER JOIN LOAN_COPY lc  ON l.Loan_No        = lc.Loan_No
     INNER JOIN COPY cp       ON lc.Copy_No       = cp.Copy_No
     INNER JOIN DVD d         ON cp.DVD_No        = d.DVD_No
-    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
-WHERE rc.Rental_Category = 'Comedy'
+WHERE d.Rental_Category = 'Comedy'
   AND l.Loan_Date >= DATE_SUB(CURDATE(), INTERVAL 28 DAY)
 ORDER BY b.Borrower_Name, l.Loan_Date;
 
@@ -482,8 +481,6 @@ WHERE d.DVD_No NOT IN (
         INNER JOIN LOAN_COPY lc ON cp.Copy_No = lc.Copy_No
 )
 ORDER BY d.DVD_No;
-
-SELECT COUNT(*) AS DVD_Count_Before FROM DVD;
 
 DELETE FROM COPY
 WHERE DVD_No NOT IN (
