@@ -48,3 +48,12 @@ CREATE TABLE LOAN (
     FOREIGN KEY (Borrower_No) REFERENCES BORROWER(Borrower_No)
 );
 
+CREATE TABLE LOAN_COPY (
+    Loan_No          VARCHAR(10)   NOT NULL,
+    Copy_No          VARCHAR(10)   NOT NULL,
+    DVD_Status       VARCHAR(20)   NOT NULL DEFAULT 'On Loan',
+    Return_Due_Date  DATE          NOT NULL,
+    PRIMARY KEY (Loan_No, Copy_No),
+    FOREIGN KEY (Loan_No) REFERENCES LOAN(Loan_No),
+    FOREIGN KEY (Copy_No) REFERENCES COPY(Copy_No)
+);
