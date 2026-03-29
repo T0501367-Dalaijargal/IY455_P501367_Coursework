@@ -503,3 +503,24 @@ WHERE lc.DVD_Status      = 'On Loan'
 GROUP BY b.Borrower_No, b.Borrower_Name, b.Borrower_Address
 ORDER BY Overdue_Items DESC;
 
+-- 3. Display the borrower details and DVDs for all borrowers who have rented comedy movies in the last 4 weeks.
+
+SELECT
+    b.Borrower_No,
+    b.Borrower_Name,
+    b.Borrower_Address,
+    d.DVD_No,
+    d.DVD_Title,
+    d.DVD_Starring_Actor,
+    l.Loan_Date,
+    lc.Return_Due_Date
+FROM BORROWER b
+    INNER JOIN LOAN l        ON b.Borrower_No    = l.Borrower_No
+    INNER JOIN LOAN_COPY lc  ON l.Loan_No        = lc.Loan_No
+    INNER JOIN COPY cp       ON lc.Copy_No       = cp.Copy_No
+    INNER JOIN DVD d         ON cp.DVD_No        = d.DVD_No
+    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
+WHERE rc.Rental_Category = 'Comedy'
+  AND l.Loan_Date >= DATE_SUB(CURDATE(), INTERVAL 28 DAY)
+ORDER BY b.Borrower_Name, l.Loan_Date;
+
