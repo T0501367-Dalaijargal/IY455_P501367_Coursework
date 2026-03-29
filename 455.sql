@@ -58,8 +58,7 @@ CREATE TABLE LOAN_COPY (
     FOREIGN KEY (Copy_No) REFERENCES COPY(Copy_No)
 );
 
-INSERT INTO RENTAL_CATEGORY (Rental_Category, Rental_Cost)
-VALUES
+INSERT INTO RENTAL_CATEGORY (Rental_Category, Rental_Cost) VALUES
     ('Action', 4.00),
     ('Adventure', 3.50),
     ('Animation', 3.50),
@@ -73,3 +72,15 @@ VALUES
     ('Sci-Fi', 4.50),
     ('Superhero', 4.50),
     ('Thriller', 4.50);
+
+INSERT INTO BORROWER (Borrower_No, Borrower_Name, Borrower_Address, Borrower_Status) VALUES
+    ('BN1721', 'Ben Jones', '28 Low Road, Nottingham NG5 3PB', 'Allowed'),
+    ('BN2034', 'Sarah Williams', '15 Oak Avenue, Derby DE1 2QR', 'Allowed'),
+    ('BN3156', 'James Carter', '42 High Street, Leicester LE1 5DR', 'Allowed'),
+    ('BN4289', 'Emma Thompson', '7 Castle Lane, Nottingham NG1 6AA', 'Suspended'),
+    ('BN5012', 'Michael Brown', '91 Park Road, Derby DE22 1GB', 'Allowed'),
+    ('BN6378', 'Lucy Davis', '33 Queen Street, Leicester LE2 7HN', 'Allowed'),
+    ('BN7491', 'David Wilson', '56 Church Road, Nottingham NG7 2RD', 'Allowed'),
+    ('BN8654', 'Rachel Green', '12 Mill Lane, Derby DE3 4PQ', 'Allowed'),
+    ('BN9102', 'Thomas Harris', '68 Bridge Street, Leicester LE3 5AB', 'Suspended'),
+    ('BN1045', 'Olivia Martin', '24 Station Road, Nottingham NG2 3EF', 'Allowed');
