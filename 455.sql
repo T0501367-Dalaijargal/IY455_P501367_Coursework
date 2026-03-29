@@ -578,3 +578,32 @@ FROM DVD d
     INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
 WHERE d.Rental_Category = 'Superhero Premium'
 ORDER BY d.DVD_Year, d.DVD_Title;
+
+-- 6. Remove DVDs with no registered loans
+
+SELECT
+    d.DVD_No,
+    d.DVD_Title,
+    d.Rental_Category
+FROM DVD d
+WHERE d.DVD_No NOT IN (
+    SELECT DISTINCT cp.DVD_No
+    FROM COPY cp
+        INNER JOIN LOAN_COPY lc ON cp.Copy_No = lc.Copy_No
+)
+ORDER BY d.DVD_No;
+
+SELECT COUNT(*) AS DVD_Count_Before FROM DVD;
+
+DELETE FROM COPY
+WHERE DVD_No NOT IN (
+    SELECT DISTINCT cp.DVD_No
+    FROM (SELECT * FROM COPY) cp
+        INNER JOIN LOAN_COPY lc ON cp.Copy_No = lc.Copy_No
+);
+
+DELETE FROM DVD
+WHERE DVD_No NOT IN (
+    SELECT DISTINCT cp.DVD_No
+    FROM COPY cp
+);
