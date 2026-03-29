@@ -546,3 +546,35 @@ GROUP BY b.Borrower_No, b.Borrower_Name,
          b.Borrower_Address, b.Borrower_Status
 ORDER BY Total_Days_Overdue DESC
 LIMIT 1;
+
+-- 5. Update the cost for rentals where the release date is >=2015 to £5.50 and the movie category is superhero.
+
+SELECT
+    d.DVD_No,
+    d.DVD_Title,
+    d.DVD_Year,
+    d.Rental_Category,
+    rc.Rental_Cost  AS Current_Cost
+FROM DVD d
+    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
+WHERE d.Rental_Category = 'Superhero'
+  AND d.DVD_Year >= 2015;
+
+INSERT INTO RENTAL_CATEGORY (Rental_Category, Rental_Cost)
+VALUES ('Superhero Premium', 5.50);
+
+UPDATE DVD
+SET Rental_Category = 'Superhero Premium'
+WHERE Rental_Category = 'Superhero'
+  AND DVD_Year >= 2015;
+
+SELECT
+    d.DVD_No,
+    d.DVD_Title,
+    d.DVD_Year,
+    d.Rental_Category,
+    rc.Rental_Cost  AS New_Cost
+FROM DVD d
+    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
+WHERE d.Rental_Category = 'Superhero Premium'
+ORDER BY d.DVD_Year, d.DVD_Title;
