@@ -364,128 +364,18 @@ FROM BORROWER b
 WHERE lc.DVD_Status = 'On Loan'
 ORDER BY SUBSTRING_INDEX(b.Borrower_Name, ' ', -1) ASC;
 
-
--- =============================================
--- (ii) Borrowers with overdue loans, ranked highest to lowest
--- =============================================
-
-SELECT
-    b.Borrower_No,
-    b.Borrower_Name,
-    b.Borrower_Address,
-    COUNT(lc.Copy_No)               AS Overdue_Items,
-    MIN(lc.Return_Due_Date)         AS Earliest_Due_Date
-FROM BORROWER b
-    INNER JOIN LOAN l        ON b.Borrower_No = l.Borrower_No
-    INNER JOIN LOAN_COPY lc  ON l.Loan_No     = lc.Loan_No
-WHERE lc.DVD_Status      = 'On Loan'
-  AND lc.Return_Due_Date < CURDATE()
-GROUP BY b.Borrower_No, b.Borrower_Name, b.Borrower_Address
-ORDER BY Overdue_Items DESC;
-
-
--- =============================================
--- (iii) Borrower details and DVDs for comedy rentals in the last 4 weeks
--- =============================================
-
-SELECT
-    b.Borrower_No,
-    b.Borrower_Name,
-    b.Borrower_Address,
-    d.DVD_No,
-    d.DVD_Title,
-    d.DVD_Starring_Actor,
-    l.Loan_Date,
-    lc.Return_Due_Date
-FROM BORROWER b
-    INNER JOIN LOAN l        ON b.Borrower_No    = l.Borrower_No
-    INNER JOIN LOAN_COPY lc  ON l.Loan_No        = lc.Loan_No
-    INNER JOIN COPY cp       ON lc.Copy_No       = cp.Copy_No
-    INNER JOIN DVD d         ON cp.DVD_No        = d.DVD_No
-    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
-WHERE rc.Rental_Category = 'Comedy'
-  AND l.Loan_Date >= DATE_SUB(CURDATE(), INTERVAL 28 DAY)
-ORDER BY b.Borrower_Name, l.Loan_Date;
-
-
--- =============================================
--- (iv) Borrower with the highest accumulated overdue fines
---      Fine rate: £1.00 per day overdue per item
--- =============================================
-
-SELECT
-    b.Borrower_No,
-    b.Borrower_Name,
-    b.Borrower_Address,
-    b.Borrower_Status,
-    COUNT(lc.Copy_No)                           AS Overdue_Items,
-    SUM(DATEDIFF(CURDATE(), lc.Return_Due_Date))
-                                                AS Total_Days_Overdue,
-    CONCAT('£', FORMAT(
-        SUM(DATEDIFF(CURDATE(), lc.Return_Due_Date)) * 1.00,
-        2))                                     AS Total_Fine
-FROM BORROWER b
-    INNER JOIN LOAN l        ON b.Borrower_No = l.Borrower_No
-    INNER JOIN LOAN_COPY lc  ON l.Loan_No     = lc.Loan_No
-WHERE lc.DVD_Status      = 'On Loan'
-  AND lc.Return_Due_Date < CURDATE()
-GROUP BY b.Borrower_No, b.Borrower_Name,
-         b.Borrower_Address, b.Borrower_Status
-ORDER BY Total_Days_Overdue DESC
-LIMIT 1;
-
-
--- =============================================
--- (v) Update rental cost to £5.50 for superhero DVDs where year >= 2015
--- =============================================
-
--- Step 1: Preview affected rows
-SELECT
-    d.DVD_No,
-    d.DVD_Title,
-    d.DVD_Year,
-    d.Rental_Category,
-    rc.Rental_Cost  AS Current_Cost
-FROM DVD d
-    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
-WHERE d.Rental_Category = 'Superhero'
-  AND d.DVD_Year >= 2015;
-
--- Step 2: Create a new category at the higher price
-INSERT INTO RENTAL_CATEGORY (Rental_Category, Rental_Cost)
-VALUES ('Superhero Premium', 5.50);
-
--- Step 3: Reassign qualifying DVDs to the new category
-UPDATE DVD
-SET Rental_Category = 'Superhero Premium'
-WHERE Rental_Category = 'Superhero'
-  AND DVD_Year >= 2015;
-
--- Step 4: Verify the update
-SELECT
-    d.DVD_No,
-    d.DVD_Title,
-    d.DVD_Year,
-    d.Rental_Category,
-    rc.Rental_Cost  AS New_Cost
-FROM DVD d
-    INNER JOIN RENTAL_CATEGORY rc ON d.Rental_Category = rc.Rental_Category
-WHERE d.Rental_Category = 'Superhero Premium'
-ORDER BY d.DVD_Year, d.DVD_Title;
-
-
 -- 1. Output all borrowers who have current rentals and order them by surname.
-SELECT
-    d.DVD_No,
-    d.DVD_Title,
-    d.Rental_Category
-FROM DVD d
-WHERE d.DVD_No NOT IN (
-    SELECT DISTINCT cp.DVD_No
-    FROM COPY cp
-        INNER JOIN LOAN_COPY lc ON cp.Copy_No = lc.Copy_No
-)
-ORDER BY d.DVD_No;
+
+SELECT DISTINCT
+    b.Borrower_No,
+    b.Borrower_Name,
+    b.Borrower_Address,
+    b.Borrower_Status
+FROM BORROWER b
+    INNER JOIN LOAN l       ON b.Borrower_No = l.Borrower_No
+    INNER JOIN LOAN_COPY lc ON l.Loan_No     = lc.Loan_No
+WHERE lc.DVD_Status = 'On Loan'
+ORDER BY SUBSTRING_INDEX(b.Borrower_Name, ' ', -1) ASC;
 
 -- 2. Create a list that shows all borrowers who have over-due loans and rank them highest to lowest.
 
